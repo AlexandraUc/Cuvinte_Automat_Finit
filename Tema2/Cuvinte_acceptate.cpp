@@ -162,7 +162,7 @@ void Automat::citireAutomat(const string& numeFisier){
     f.close();
 }
 
-// Cheama functia de afisare a cuvintelor in functie
+// Cheama functia de afisare a cuvintelor in functie de tipul automatului
 void Automat::cheamaFunctie(){
     this->ok = 0;
 
