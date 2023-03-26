@@ -169,9 +169,9 @@ void Automat::cheamaFunctie(){
     if(this->AFN_lambda == 0)
         this->toateCuvintele(this->lungimeCuvinte, this->stareInitiala, "", this->drum);
     else{
-        if(this->verificaAcceptare(" ") == 1){    // Verifica cuvantul vid
+        if(this->verificaAcceptare("") == 1){    // Verifica cuvantul vid
             this->ok = 1;
-            cout << ' ' << endl;
+            cout << "" << endl;
         }
         this->genereazaCuvintele();
     }
