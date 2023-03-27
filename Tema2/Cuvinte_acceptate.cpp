@@ -171,7 +171,7 @@ void Automat::cheamaFunctie(){
     else{
         if(this->verificaAcceptare("") == 1){    // Verifica cuvantul vid
             this->ok = 1;
-            cout << "" << endl;
+            cout << endl;
         }
         this->genereazaCuvintele();
     }
