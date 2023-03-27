@@ -343,7 +343,7 @@ Automat::~Automat(){
 int main(){
     string numeFisier2 = "in2.txt";
     Automat a, a2(numeFisier2);
-    //a.cheamaFunctie();
-    a2.cheamaFunctie();
+    a.cheamaFunctie();
+    //a2.cheamaFunctie();
     return 0;
 }
