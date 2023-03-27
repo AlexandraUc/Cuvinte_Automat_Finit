@@ -177,7 +177,7 @@ void Automat::cheamaFunctie(){
     }
 
     if(this->ok == 0)
-        cout << "Nu se accepta niciun cuvant de lungime " << this->lungimeCuvinte << endl;
+        cout << "Nu se accepta niciun cuvant de lungime maxima " << this->lungimeCuvinte << endl;
 }
 
 // Afiseaza toate cuvintele (+drumul) de o lungime maxima data (pentru AFD si AFN)
