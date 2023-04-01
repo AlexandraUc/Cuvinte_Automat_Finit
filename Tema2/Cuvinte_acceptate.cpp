@@ -20,15 +20,24 @@ class Automat{
     string drum;
     bool ok, AFN_lambda;
 
-    void citireAutomat(const string&);
+    void citireAutomat(string);
     void toateCuvintele(int, char, string, string);
     void cautaLambdaInchideri(string&, char);
     void seteazaLambdaInchideri();
     void genereazaCuvintele(string cuvant = "");
 public:
-    Automat(const string&);
+    Automat(string);
     Automat(const Automat&);
     Automat& operator = (const Automat&);
+
+    bool getAFN_lambda() {return this->AFN_lambda;}
+    int getNrStari() {return this->nrStari;}
+    char getStareInitiala() {return this->stareInitiala;}
+    int getNrStariFinale() {return this->nrStariFinale;}
+    const char* getStariFinale() {return this->stariFinale;}
+    int getLungimeCuvinte() {return this->lungimeCuvinte;}
+
+    void setLungimeCuvinte(int lungimeCuvinte) {this->lungimeCuvinte = lungimeCuvinte;}
 
     void afisareMatriceAutomat();
     void afisLambdaInchideri();
@@ -40,7 +49,7 @@ public:
 };
 
 // Constructor
-Automat::Automat(const string& numeFisier = "in.txt"){
+Automat::Automat(string numeFisier = ""){
     this->drum = "";
     this->ok = 0;
     this->citireAutomat(numeFisier);
@@ -120,7 +129,9 @@ Automat& Automat::operator = (const Automat& obj){
 }
 
 // Citeste din fisier
-void Automat::citireAutomat(const string& numeFisier){
+void Automat::citireAutomat(string numeFisier){
+    if(numeFisier == "")
+        numeFisier = "in.txt";
     ifstream f(numeFisier);
     if(!f){
         cout << "Nu exista fisierul\n";
@@ -186,7 +197,7 @@ void Automat::toateCuvintele(int lungimeCuvinte, char stareCurenta, string cuvan
         for(int i = 0; i < this->nrStariFinale; i++)
             if(stareCurenta == this->stariFinale[i]){
                 this->ok = 1;
-                cout << cuvant << ' ' << drum << endl;
+                cout << cuvant << " drum: " << drum << endl;
             }
     }
     if(lungimeCuvinte > 0){
@@ -194,10 +205,10 @@ void Automat::toateCuvintele(int lungimeCuvinte, char stareCurenta, string cuvan
             if(stareCurenta == this->matriceAutomat[i][0])
                 if(this->matriceAutomat[i][2] != ' ')
                     toateCuvintele(lungimeCuvinte - 1, this->matriceAutomat[i][1], 
-                        cuvant + this->matriceAutomat[i][2], drum + this->matriceAutomat[i][1]);
+                        cuvant + this->matriceAutomat[i][2], drum + ' ' + this->matriceAutomat[i][1]);
                 else
                     toateCuvintele(lungimeCuvinte, this->matriceAutomat[i][1], 
-                        cuvant, drum + this->matriceAutomat[i][1]);
+                        cuvant, drum + ' ' + this->matriceAutomat[i][1]);
         }
     } 
 }
@@ -246,7 +257,7 @@ void Automat::seteazaLambdaInchideri(){
 bool Automat::verificaAcceptare(string cuvant){
     // stari - starile din care plecam
     // stariCurente - starile in care ajungem
-    string stari = this->lambdaInchideri[(int)(this->stareInitiala - 48)];   // Inchideri lambda pentru starea initiala
+    string stari = this->lambdaInchideri[(int)(this->stareInitiala - 48)]; // Inchideri lambda pentru starea initiala
     
     for(int i = 0; i < cuvant.size(); i++){
         // Citim o litera
@@ -302,7 +313,7 @@ void Automat::afisareMatriceAutomat(){
 void Automat::afisLambdaInchideri(){
     if(this->lambdaInchideri != NULL){
         for(int i = 0; i < this->nrStari; i++)
-            cout << this->lambdaInchideri[i] << endl;
+            cout << "Stare " << i << ": " << this->lambdaInchideri[i] << endl;
     }
     else
         cout << "Nu exista\n";
@@ -338,9 +349,105 @@ Automat::~Automat(){
 }
 
 int main(){
-    string numeFisier2 = "in4.txt";
-    Automat a, a2(numeFisier2);
-    //a.cheamaFunctie();
-    a2.cheamaFunctie();
+    while(true){
+        int comanda;
+        cout << "1. Introduceti nume fisier\n";
+        cout << "2. Fisier default\n";
+        cout << "3. Exit\n";
+        cin >> comanda;
+        while(cin.fail() || (comanda != 1 && comanda != 2 && comanda != 3)){
+            cin.clear();
+            cin.ignore(100, '\n');
+            cout << "Comanda invalida. Incercati din nou\n";
+            cin >> comanda;
+        }
+
+        if(comanda == 3)
+            break;
+        
+        string numeFisier = "";
+        if(comanda == 1){
+            cout << "Nume fisier:\n";
+            cin >> numeFisier;
+        }
+        Automat a(numeFisier);
+
+        bool ok = 1;
+        while(ok){
+            int comanda2;
+            cout << "1. Vezi informatii\n";
+            cout << "2. Vezi cuvintele acceptate\n";
+            cout << "3. Schimba lungimea maxima\n";
+            cout << "4. Exit\n";
+            cin >> comanda2;
+            while(cin.fail()){
+                cin.clear();
+                cin.ignore(100, '\n');
+                cout << "Comanda invalida. Incercati din nou\n";
+                cin >> comanda2;
+            }
+
+            switch(comanda2){
+                case 1:{
+                    bool lambda = a.getAFN_lambda();
+                    if(lambda)
+                        cout << "Tip automat: AFN-lambda\n";
+                    else
+                        cout << "Tip automat: AFD/ AFN\n";
+                    cout << "Nr stari: " << a.getNrStari() << endl;
+                    cout << "Stare initiala: " << a.getStareInitiala() << endl;
+                    cout << "Stari finale: ";
+                    for(int i = 0; i < a.getNrStariFinale(); i++)
+                        cout << a.getStariFinale()[i] << ' ';
+                    cout << endl << "Matricea de tranzitii:\n";
+                    a.afisareMatriceAutomat();
+                        
+                    if(lambda){
+                        cout << "Vezi lambda inchideri? (d/n)\n";
+                        string c;
+                        cin >> c;
+                        if(c == "d"){
+                            cout << "Lambda inchideri:\n";
+                            a.afisLambdaInchideri();
+                        }
+                        else
+                            if(c != "n")
+                                cout << "Comanda invalida\n";
+                    }
+                    break;
+                }
+
+                case 2:{
+                    cout << "Cuvintele acceptate de lungime maxima " << a.getLungimeCuvinte() << ":\n";
+                    a.cheamaFunctie();
+                    break;
+                }
+
+                case 3:{
+                    int lungimeMaxima;
+                    cout << "Lungime maxima:\n";
+                    cin >> lungimeMaxima;
+                    while(cin.fail() || lungimeMaxima < 0){
+                        cin.clear();
+                        cin.ignore(100, '\n');
+                        cout << "Input invalid. Incercati din nou\n";
+                        cin >> lungimeMaxima;
+                    }
+                    a.setLungimeCuvinte(lungimeMaxima);
+                    break;
+                }
+
+                case 4:{
+                    ok = 0;
+                    break;
+                }
+
+                default: {
+                    cout << "Comanda invalida\n";
+                    break;
+                }
+            }
+        }
+    }
     return 0;
 }
